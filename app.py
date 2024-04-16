@@ -1,25 +1,27 @@
 from flask import Flask, render_template, request
-
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
-from keras.applications.vgg16 import preprocess_input
-from keras.applications.vgg16 import decode_predictions
-#from keras.applications.vgg16 import VGG16
-from keras.applications.resnet50 import ResNet50
+from keras.applications.mobilenet_v2 import preprocess_input
+from keras.applications.mobilenet_v2 import decode_predictions
+#from keras.applications.resnet50 import ResNet50
+from keras.applications.mobilenet_v2 import MobileNetV2
+from tensorflow.keras.models import load_model
+
 
 app = Flask(__name__)
-model = ResNet50()
+model = MobileNetV2()
 
-@app.route('/', methods=['GET'])
-def hello_word():
+@app.route('/',methods = ['GET'])
+def helloworld() : 
     return render_template('index.html')
 
-@app.route('/', methods=['POST'])
-def predict():
-    imagefile= request.files['imagefile']
-    image_path = "./images/" + imagefile.filename
-    imagefile.save(image_path)
 
+
+@app.route('/',methods = ['POST'])
+def predict() : 
+    imagefile = request.files['imagefile']
+    image_path = "./images" + imagefile.filename
+    imagefile.save(image_path)
     image = load_img(image_path, target_size=(224, 224))
     image = img_to_array(image)
     image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
@@ -32,7 +34,9 @@ def predict():
 
 
     return render_template('index.html', prediction=classification)
+    return render_template('index.html')
 
 
-if __name__ == '__main__':
-    app.run(port=3000, debug=True)
+
+if __name__ == '__main__' : 
+    app.run(port=3000)
